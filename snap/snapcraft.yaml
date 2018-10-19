@@ -1,0 +1,84 @@
+name: wire
+version: 'latest'
+version-script: cat $SNAPCRAFT_STAGE/version
+summary: Secure and private chat with end-to-end encryption
+description: |
+  Text, voice, video and media on Wire are always end-to-end encrypted
+  1:1 and in groups, so all your conversations are secure and private.
+  Conversations are available on multiple devices and platforms without
+  weakening security.
+
+grade: stable
+confinement: strict
+
+architectures:
+  - build-on: amd64
+  - build-on: i386
+
+parts:
+  wire:
+    plugin: nil
+    override-build: |
+      snapcraftctl build
+      ARCHITECTURE=$(dpkg --print-architecture)
+      # Get the latest releases json
+      echo "Get GitHub releases..."
+      wget --quiet https://api.github.com/repos/wireapp/wire-desktop/releases/latest -O releases.json
+      # Get the version from the tag_name and the download URL.
+      VERSION=$(jq . releases.json | grep tag_name | cut -d'"' -f4 | sed 's|release/||')
+      DEB_URL=$(cat releases.json | jq -r ".assets[] | select(.name | test(\"${FILTER}\")) | .browser_download_url")
+      DEB=$(basename "${DEB_URL}")
+      echo "Downloading ${DEB_URL}..."
+      wget --quiet "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
+      echo "Unpacking ${DEB}..."
+      dpkg -x "${SNAPCRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
+      rm -f releases.json 2>/dev/null
+      rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}" 2>/dev/null
+      echo $VERSION > $SNAPCRAFT_STAGE/version
+      sed -i 's|Icon=.*|Icon=/usr/share/icons/hicolor/256x256/apps/wire-desktop\.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/wire-desktop.desktop
+    after:
+      - desktop-gtk2
+    build-packages:
+      - dpkg
+      - jq
+      - sed
+      - wget
+    stage-packages:
+      - libasound2
+      - libgconf2-4
+      - libnotify4
+      - libnspr4
+      - libnss3
+      - libpcre3
+      - libpulse0
+      - libxss1
+      - libxtst6
+
+apps:
+  wire:
+    command: bin/desktop-launch $SNAP/opt/Wire/wire-desktop
+    desktop: usr/share/applications/wire-desktop.desktop
+    # Correct the TMPDIR path for Chromium Framework/Electron to ensure
+    # libappindicator has readable resources.
+    # Coerce XDG_CURRENT_DESKTOP to Unity so that App Indicators
+    # are used and do not fall back to Notication Area applets
+    # or disappear completely.
+    environment:
+      TMPDIR: $XDG_RUNTIME_DIR
+      XDG_CURRENT_DESKTOP: Unity
+    plugs:
+      - browser-support
+      - camera
+      - desktop
+      - desktop-legacy
+      - gsettings
+      - home
+      - mount-observe
+      - network
+      - network-bind
+      - opengl
+      - pulseaudio
+      - screen-inhibit-control
+      - unity7
+      - wayland
+      - x11
