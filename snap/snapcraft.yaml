@@ -23,10 +23,10 @@ parts:
       ARCHITECTURE=$(dpkg --print-architecture)
       # Get the latest releases json
       echo "Get GitHub releases..."
-      wget --quiet https://api.github.com/repos/wireapp/wire-desktop/releases/latest -O releases.json
+      wget --quiet https://api.github.com/repos/wireapp/wire-desktop/releases -O releases.json
       # Get the version from the tag_name and the download URL.
-      VERSION=$(jq . releases.json | grep tag_name | cut -d'"' -f4 | sed 's|release/||')
-      DEB_URL=$(cat releases.json | jq -r ".assets[] | select(.name | test(\"${FILTER}\")) | .browser_download_url" | grep deb | grep $ARCHITECTURE)
+      VERSION=$(jq . releases.json | grep tag_name | cut -d'"' -f4 | grep linux | head -n 1 | cut -d'/' -f2)
+      DEB_URL=$(grep browser_download releases.json | grep "${VERSION}" | grep "${ARCHITECTURE}" | grep deb | cut -d'"' -f4)
       DEB=$(basename "${DEB_URL}")
       echo "Downloading ${DEB_URL}..."
       wget --quiet "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
