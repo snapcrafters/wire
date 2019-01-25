@@ -37,7 +37,7 @@ parts:
       echo $VERSION > $SNAPCRAFT_STAGE/version
       sed -i 's|Icon=.*|Icon=/usr/share/icons/hicolor/256x256/apps/wire-desktop\.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/wire-desktop.desktop
     after:
-      - desktop-gtk2
+      - desktop-gtk3
     build-packages:
       - dpkg
       - jq
