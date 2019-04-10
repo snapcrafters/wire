@@ -60,6 +60,7 @@ parts:
     plugin: nil
     override-build: |
       snapcraftctl build
+      set -x
       ARCHITECTURE=$(dpkg --print-architecture)
       # Get the latest releases json
       echo "Get GitHub releases..."
