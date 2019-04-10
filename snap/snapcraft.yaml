@@ -14,10 +14,7 @@ confinement: strict
 architectures:
   - build-on: amd64
   - build-on: i386
-
-grade: stable
-confinement: strict
-
+  
 plugs:
   gnome-3-26-1604:
     interface: content
