@@ -33,6 +33,9 @@ plugs:
     default-provider: gtk-common-themes
 
 parts:
+  bsi-trigger: # A non-built part, only used to trigger builds in build.snapcraft.io on upstream changes
+    plugin: nil
+    source: https://github.com/wireapp/wire-desktop.git
   gnome:
     plugin: nil
     build-packages:
