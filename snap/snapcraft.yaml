@@ -7,6 +7,7 @@ description: |
   1:1 and in groups, so all your conversations are secure and private.
   Conversations are available on multiple devices and platforms without
   weakening security.
+base: core18
 
 grade: stable
 confinement: strict
@@ -15,10 +16,10 @@ architectures:
   - build-on: amd64
   
 plugs:
-  gnome-3-26-1604:
+  gnome-3-28-1804:
     interface: content
     target: $SNAP/gnome-platform
-    default-provider: gnome-3-26-1604
+    default-provider: gnome-3-28-1804
   gtk-3-themes:
     interface: content
     target: $SNAP/data-dir/themes
@@ -33,23 +34,28 @@ plugs:
     default-provider: gtk-common-themes
 
 parts:
-  gnome:
+  bsi-trigger: # A non-built part, only used to trigger builds in build.snapcraft.io on upstream changes
     plugin: nil
+    source: https://github.com/wireapp/wire-desktop.git
+  desktop-gnome-platform:
     build-packages:
-      - software-properties-common
-    override-pull: |
-      add-apt-repository -y ppa:ubuntu-desktop/gnome-3-26
-      apt -y update
-      apt -y upgrade
+    - build-essential
+    - libgtk-3-dev
+    make-parameters:
+    - FLAVOR=gtk3
+    override-build: |
+      snapcraftctl build
+      mkdir -pv $SNAPCRAFT_PART_INSTALL/gnome-platform
+    plugin: make
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: gtk
 
   libappindicator:
     plugin: nil
     after:
-      - gnome
+      - desktop-gnome-platform
     stage-packages:
       - libappindicator3-1
-    build-attributes:
-      - no-system-libraries
     prime:
       - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdbusmenu*.so*
       - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libappindicator*.so*
@@ -77,11 +83,8 @@ parts:
       echo $VERSION > $SNAPCRAFT_STAGE/version
       sed -i 's|Icon=.*|Icon=/usr/share/icons/hicolor/256x256/apps/wire-desktop\.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/wire-desktop.desktop
     after:
-      - gnome
       - desktop-gnome-platform
       - libappindicator
-    build-attributes:
-      - no-system-libraries
     build-packages:
       - dpkg
       - jq
