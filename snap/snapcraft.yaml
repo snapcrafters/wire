@@ -81,7 +81,7 @@ parts:
       rm -f releases.json 2>/dev/null
       rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}" 2>/dev/null
       echo $VERSION > $SNAPCRAFT_STAGE/version
-      chmod -s $SNAPCRAFT_PART_INSTALL/opt/Wire/chrome-sandbox
+      rm $SNAPCRAFT_PART_INSTALL/opt/Wire/chrome-sandbox
       sed -i 's|Icon=.*|Icon=/usr/share/icons/hicolor/256x256/apps/wire-desktop\.png|g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/wire-desktop.desktop
     after:
       - desktop-gnome-platform
@@ -101,7 +101,7 @@ parts:
 
 apps:
   wire:
-    command: bin/desktop-launch $SNAP/opt/Wire/wire-desktop
+    command: bin/desktop-launch $SNAP/opt/Wire/wire-desktop --no-sandbox
     desktop: usr/share/applications/wire-desktop.desktop
     environment:
       # Correct the TMPDIR path for Chromium Framework/Electron to
