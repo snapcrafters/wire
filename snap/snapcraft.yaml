@@ -62,6 +62,14 @@ parts:
       - libnspr4
       - libnss3
       - libxss1
+  cleanup:
+    after: [wire]
+    plugin: nil
+    build-snaps: [ gnome-3-28-1804 ]
+    override-prime: |
+        set -eux
+        cd /snap/gnome-3-28-1804/current
+        find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/{} \;
 
 apps:
   wire:
