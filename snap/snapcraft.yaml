@@ -81,16 +81,10 @@ apps:
     plugs:
       - browser-support
       - camera
-      - desktop
-      - desktop-legacy
-      - gsettings
       - home
-      - mount-observe
       - network
       - network-bind
       - opengl
       - pulseaudio
       - screen-inhibit-control
       - unity7
-      - wayland
-      - x11
