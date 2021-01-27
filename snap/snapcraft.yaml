@@ -7,7 +7,7 @@ description: |
   1:1 and in groups, so all your conversations are secure and private.
   Conversations are available on multiple devices and platforms without
   weakening security.
-base: core18
+base: core20
 
 grade: stable
 confinement: strict
@@ -65,15 +65,15 @@ parts:
   cleanup:
     after: [wire]
     plugin: nil
-    build-snaps: [ gnome-3-28-1804 ]
+    build-snaps: [ gnome-3-38-2004 ]
     override-prime: |
         set -eux
-        cd /snap/gnome-3-28-1804/current
+        cd /snap/gnome-3-38-2004/current
         find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/{} \;
 
 apps:
   wire:
-    extensions: [gnome-3-28]
+    extensions: [gnome-3-38]
     command: opt/Wire/wire-desktop --no-sandbox
     desktop: usr/share/applications/wire-desktop.desktop
     environment:
