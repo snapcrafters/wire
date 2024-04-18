@@ -12,6 +12,7 @@ distributions.</p>
     sudo snap install wire
     snap connect wire:camera core:camera
     snap connect wire:mount-observe core:mount-observe
+    snap connect wire:password-manager-service
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
 
