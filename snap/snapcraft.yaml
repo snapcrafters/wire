@@ -94,6 +94,7 @@ apps:
       - network
       - network-bind
       - opengl
+      - password-manager-service
       - pulseaudio
       - screen-inhibit-control
       - unity7
